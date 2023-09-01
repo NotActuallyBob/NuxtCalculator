@@ -30,6 +30,14 @@ export class Character {
         return this.value === '-';
     }
 
+    isMultiplicationSign(): boolean {
+        return this.value === '*';
+    }
+    
+    isDivitionSign(): boolean {
+        return this.value === '/';
+    }
+
     isSpace(): boolean {
         return this.value === ' ';
     }

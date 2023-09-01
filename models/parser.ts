@@ -1,48 +1,77 @@
 import { Token, TokenType } from "./token";
-import { Statment, StatmentAddition, StatmentSubtraction } from "./statment";
+import { Statment, StatmentAddition, StatmentDivision, StatmentMultiplication, StatmentSubtraction } from "./statment";
 
 export class Parser {
     index: number;
     tokens: Token[];
+
+    importanceOfLast: number = -1;
+    importanceOfCurrent: number = -1;
 
     constructor (tokens: Token[]) {
         this.tokens = tokens;
         this.index = 0;
     }
 
-    parseTokens(): number | undefined {
+    parseTokens(): Statment | undefined {
         let statment: Statment | undefined = undefined;
 
-        if(this.tokens[0].type !== TokenType.Numeral) {
-            console.error('Should start with number')
-            return undefined;
-        }
+        const operationType: TokenType = this.getOperationType();
 
-        while(this.peek() !== undefined && this.peek(1) !== undefined && this.peek(2) !== undefined) {
-            if(this.peek(1)!.type === TokenType.Addition){
-                const member1: number = this.consume()!.value!;
-                this.consume();
-                const member2: number = this.peek()!.value!;
+        const number3: number = this.consume()!.value!;
+        const operationToken1: Token = this.consume()!;
+        const number4: number = this.peek()!.value!;
+        this.importanceOfLast = operationToken1.getImportance();
+        statment = this.createStatment(operationToken1, number3, number4);
 
-                if(statment === undefined) {
-                    statment = new StatmentAddition(member1, member2)
-                } else {
-                    statment = new StatmentAddition(statment, member2);
-                }
-            } else if(this.peek(1)!.type === TokenType.Subtraction) {
-                const member1: number = this.consume()!.value!;
-                this.consume();
-                const member2: number = this.peek()!.value!;
+        while(this.hasNextOperation()){
+            const operationType: TokenType = this.getOperationType();
 
-                if(statment === undefined) {
-                    statment = new StatmentSubtraction(member1, member2)
-                } else {
-                    statment = new StatmentSubtraction(statment, member2);
-                }
+            const number1: number = this.consume()!.value!;
+            const operationToken: Token = this.consume()!;
+            const number2: number = this.peek()!.value!;
+            this.importanceOfCurrent = operationToken.getImportance();
+            
+            const newStatment = this.createStatment(operationToken, number1, number2);
+
+            if(this.nextFirst()){
+                statment!.swapRight(newStatment);
+            } else {
+                newStatment.member1 = statment;
+                statment = newStatment;
             }
+
+            this.importanceOfLast = this.importanceOfCurrent;
         }
 
-        return statment!.evaluate();
+        return statment;
+    }
+    
+    createStatment(token: Token, number1: number | Statment, number2: number | Statment) : Statment{
+        switch (token.type) {
+            case TokenType.Addition:
+                return new StatmentAddition(number1, number2);
+            case TokenType.Subtraction:
+                return new StatmentSubtraction(number1, number2);
+            case TokenType.Multiplication:
+                return new StatmentMultiplication(number1, number2);
+            case TokenType.Division:
+                return new StatmentDivision(number1, number2);
+            default:
+                throw new Error("OperationToken was number");
+        }
+    }
+
+    nextFirst(): boolean {
+        return this.importanceOfCurrent > this.importanceOfLast;
+    }
+
+    hasNextOperation() {
+        return (this.peek() !== undefined && this.peek(1) !== undefined && this.peek(2) !== undefined)
+    }
+
+    getOperationType(): TokenType {
+        return (this.peek(1)!.type);
     }
 
     peek(offset: number = 0): Token | undefined {

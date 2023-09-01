@@ -12,7 +12,7 @@ export class Calculator {
         const tokenArray: Token[] = tokenizer.tokenize();
 
         const parser: Parser = new Parser(tokenArray);
-        const result: number | undefined = parser.parseTokens();
+        const result: number | undefined = parser.parseTokens()!.evaluate();
 
         tokenArray.forEach(token => {
             console.log(token);    

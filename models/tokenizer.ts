@@ -6,7 +6,7 @@ export class Tokenizer {
     index: number;
 
     constructor(input: string) {
-        this.input = input;
+        this.input = input.trim();
         this.index = 0;
     }
 
@@ -44,6 +44,12 @@ export class Tokenizer {
             } else if (this.peek().isSubtractionSign()) {
                 this.consume();
                 tokenArray.push(new Token(TokenType.Subtraction));
+            } else if (this.peek().isMultiplicationSign()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.Multiplication));
+            } else if (this.peek().isDivitionSign()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.Division));
             } else {
                 console.error('Found something weird in the input');
                 this.consume();
