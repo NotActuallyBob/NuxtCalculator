@@ -63,7 +63,7 @@ export class Parser {
     }
 
     nextFirst(): boolean {
-        return this.importanceOfCurrent > this.importanceOfLast;
+        return this.importanceOfCurrent >= this.importanceOfLast;
     }
 
     hasNextOperation() {
