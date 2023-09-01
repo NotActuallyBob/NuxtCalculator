@@ -9,10 +9,15 @@
 <script setup lang="ts">
 import { Calculator } from '@/models/calculator'
 const input = ref('');
-const output = ref('');
+const output: Ref<string | undefined> = ref('');
 
 function calculate() {
-    output.value = Calculator.calculate(input.value).toString();
+    const result = Calculator.calculate(input.value);
+    if (result !== undefined) {
+        output.value = result.toString();
+    } else {
+        output.value = 'Error';
+    }
 }
 </script>
 
