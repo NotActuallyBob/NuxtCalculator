@@ -1,5 +1,5 @@
 import { Token, TokenType } from "./token";
-import { Statment, StatmentAddition } from "./statment";
+import { Statment, StatmentAddition, StatmentSubtraction } from "./statment";
 
 export class Parser {
     index: number;
@@ -27,7 +27,17 @@ export class Parser {
                 if(statment === undefined) {
                     statment = new StatmentAddition(member1, member2)
                 } else {
-                    statment = new StatmentAddition(statment.evaluate(), member2);
+                    statment = new StatmentAddition(statment, member2);
+                }
+            } else if(this.peek(1)!.type === TokenType.Subtraction) {
+                const member1: number = this.consume()!.value!;
+                this.consume();
+                const member2: number = this.peek()!.value!;
+
+                if(statment === undefined) {
+                    statment = new StatmentSubtraction(member1, member2)
+                } else {
+                    statment = new StatmentSubtraction(statment, member2);
                 }
             }
         }

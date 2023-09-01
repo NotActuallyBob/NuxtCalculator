@@ -26,6 +26,10 @@ export class Character {
         return this.value === '+';
     }
 
+    isSubtractionSign(): boolean {
+        return this.value === '-';
+    }
+
     isSpace(): boolean {
         return this.value === ' ';
     }

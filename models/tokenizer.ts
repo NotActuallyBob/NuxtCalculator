@@ -41,8 +41,18 @@ export class Tokenizer {
             } else if (this.peek().isAdditionSign()) {
                 this.consume();
                 tokenArray.push(new Token(TokenType.Addition));
+            } else if (this.peek().isSubtractionSign()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.Subtraction));
+            } else {
+                console.error('Found something weird in the input');
+                this.consume();
             }
         }
+
+        tokenArray.forEach(token => {
+            console.log(token);
+        });
         return tokenArray;
     }
 }
