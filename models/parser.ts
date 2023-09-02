@@ -1,5 +1,5 @@
 import { Token, TokenType } from "./token";
-import { Statment, StatmentAddition, StatmentDivision, StatmentMultiplication, StatmentSubtraction } from "./statment";
+import { Statement, StatementAddition, StatementDivision, StatementMultiplication, StatementSubtraction } from "./statement";
 
 export class Parser {
     index: number;
@@ -13,35 +13,35 @@ export class Parser {
         this.index = 0;
     }
 
-    parseTokens(): Statment | undefined {
+    parseTokens(): Statement | undefined {
         if(!this.hasNextOperation()) {
             return undefined;
         }
         
-        let statment: Statment = this.getNextStatment();
-        let previousStatment: Statment = statment;
+        let Statement: Statement = this.getNextStatement();
+        let previousStatement: Statement = Statement;
         while(this.hasNextOperation()){
-            const nextStatment = this.getNextStatment();
-            if(nextStatment.isMoreImportant(previousStatment)){
-                statment!.swapRight(nextStatment);
+            const nextStatement = this.getNextStatement();
+            if(nextStatement.isMoreImportant(previousStatement)){
+                Statement!.swapRight(nextStatement);
             } else {
-                nextStatment.member1 = statment;
-                statment = nextStatment;
+                nextStatement.member1 = Statement;
+                Statement = nextStatement;
             }
             this.importanceOfLast = this.importanceOfCurrent;
-            previousStatment = statment;
+            previousStatement = Statement;
         }
-        return statment;
+        return Statement;
     }
 
-    getNextStatment(): Statment {
+    getNextStatement(): Statement {
         const next = this.getNextOperation();
             const operationToken: Token = next.operationToken;
             const number1: number = next.n1;
             const number2: number = next.n2;
 
             this.importanceOfCurrent = operationToken.getImportance();
-            return this.createStatment(operationToken, number1, number2);
+            return this.createStatement(operationToken, number1, number2);
     }
 
     getNextOperation() {
@@ -52,16 +52,16 @@ export class Parser {
         return {operationToken, n1, n2};
     }
     
-    createStatment(token: Token, number1: number | Statment, number2: number | Statment) : Statment {
+    createStatement(token: Token, number1: number | Statement, number2: number | Statement) : Statement {
         switch (token.type) {
             case TokenType.Addition:
-                return new StatmentAddition(number1, number2);
+                return new StatementAddition(number1, number2);
             case TokenType.Subtraction:
-                return new StatmentSubtraction(number1, number2);
+                return new StatementSubtraction(number1, number2);
             case TokenType.Multiplication:
-                return new StatmentMultiplication(number1, number2);
+                return new StatementMultiplication(number1, number2);
             case TokenType.Division:
-                return new StatmentDivision(number1, number2);
+                return new StatementDivision(number1, number2);
         }
         throw new Error("OperationToken was number");
     }
