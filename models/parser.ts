@@ -14,40 +14,45 @@ export class Parser {
     }
 
     parseTokens(): Statment | undefined {
-        let statment: Statment | undefined = undefined;
-
-        const operationType: TokenType = this.getOperationType();
-
-        const number3: number = this.consume()!.value!;
-        const operationToken1: Token = this.consume()!;
-        const number4: number = this.peek()!.value!;
-        this.importanceOfLast = operationToken1.getImportance();
-        statment = this.createStatment(operationToken1, number3, number4);
-
-        while(this.hasNextOperation()){
-            const operationType: TokenType = this.getOperationType();
-
-            const number1: number = this.consume()!.value!;
-            const operationToken: Token = this.consume()!;
-            const number2: number = this.peek()!.value!;
-            this.importanceOfCurrent = operationToken.getImportance();
-            
-            const newStatment = this.createStatment(operationToken, number1, number2);
-
-            if(this.nextFirst()){
-                statment!.swapRight(newStatment);
-            } else {
-                newStatment.member1 = statment;
-                statment = newStatment;
-            }
-
-            this.importanceOfLast = this.importanceOfCurrent;
+        if(!this.hasNextOperation()) {
+            return undefined;
         }
-
+        
+        let statment: Statment = this.getNextStatment();
+        let previousStatment: Statment = statment;
+        while(this.hasNextOperation()){
+            const nextStatment = this.getNextStatment();
+            if(nextStatment.isMoreImportant(previousStatment)){
+                statment!.swapRight(nextStatment);
+            } else {
+                nextStatment.member1 = statment;
+                statment = nextStatment;
+            }
+            this.importanceOfLast = this.importanceOfCurrent;
+            previousStatment = statment;
+        }
         return statment;
     }
+
+    getNextStatment(): Statment {
+        const next = this.getNextOperation();
+            const operationToken: Token = next.operationToken;
+            const number1: number = next.n1;
+            const number2: number = next.n2;
+
+            this.importanceOfCurrent = operationToken.getImportance();
+            return this.createStatment(operationToken, number1, number2);
+    }
+
+    getNextOperation() {
+        const n1: number = (this.consume()!.value!)
+        const operationToken = (this.consume()!);
+        const n2: number = (this.peek()!.value!)
+
+        return {operationToken, n1, n2};
+    }
     
-    createStatment(token: Token, number1: number | Statment, number2: number | Statment) : Statment{
+    createStatment(token: Token, number1: number | Statment, number2: number | Statment) : Statment {
         switch (token.type) {
             case TokenType.Addition:
                 return new StatmentAddition(number1, number2);
@@ -57,21 +62,18 @@ export class Parser {
                 return new StatmentMultiplication(number1, number2);
             case TokenType.Division:
                 return new StatmentDivision(number1, number2);
-            default:
-                throw new Error("OperationToken was number");
         }
-    }
-
-    nextFirst(): boolean {
-        return this.importanceOfCurrent >= this.importanceOfLast;
+        throw new Error("OperationToken was number");
     }
 
     hasNextOperation() {
-        return (this.peek() !== undefined && this.peek(1) !== undefined && this.peek(2) !== undefined)
-    }
-
-    getOperationType(): TokenType {
-        return (this.peek(1)!.type);
+        
+        return (this.peek() !== undefined &&
+                this.peek(1) !== undefined &&
+                this.peek(2) !== undefined &&
+                this.peek()!.type === TokenType.Numeral &&
+                this.peek(1)?.isOperation() &&
+                this.peek(2)!.type === TokenType.Numeral);
     }
 
     peek(offset: number = 0): Token | undefined {

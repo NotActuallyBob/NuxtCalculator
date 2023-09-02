@@ -20,6 +20,10 @@ export class Token {
         return this;
     }
 
+    isOperation(): boolean {
+        return this.type !== TokenType.Numeral
+    }
+
     getImportance(): number {
         switch(this.type) {
             case TokenType.Addition:
