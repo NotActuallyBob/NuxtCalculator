@@ -16,10 +16,38 @@ export abstract class Statement {
         if (typeof this.member2 !== 'number') {
             this.member2 = this.member2.evaluate();
         }
+        console.log(this.calculate());
         return this.calculate();
     }
 
     abstract calculate(): number;
+
+    swapUp(statement: Statement, rootStatment: Statement): Statement {
+        if(typeof this.member2 === 'number'){
+            if(statement.isMoreImportant(this)){
+                this.member2 = statement;
+                return rootStatment;
+            } else {
+                statement.member1 = this;
+                return statement;
+            }
+        }
+
+        if(this.member2.isMoreImportant(statement)){
+            statement.member1 = this;
+            return statement;
+        }
+
+        const rightChild: Statement = this.member2 as Statement;
+
+        if(!rightChild.isMoreImportant(statement)){
+            statement.member1 = rightChild;
+            this.member2 = statement;
+            return rootStatment;
+        }
+
+        return rightChild.swapUp(statement, rootStatment);
+    }
 
     swapRight(statement: Statement): void {
         if (typeof this.member2 === 'number') {
@@ -71,5 +99,15 @@ export class StatementDivision extends Statement {
 
     calculate(): number {
         return (this.member1 as number) / (this.member2 as number);
+    }
+}
+
+export class StatementPower extends Statement {
+    constructor(member1: number | Statement, member2: number | Statement) {
+        super(member1, member2, 2);
+    }
+
+    calculate(): number {
+        return (this.member1 as number) ** (this.member2 as number);
     }
 }

@@ -50,6 +50,9 @@ export class Tokenizer {
             } else if (this.peek().isDivitionSign()) {
                 this.consume();
                 tokenArray.push(new Token(TokenType.Division));
+            } else if (this.peek().isPowerSign()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.Power));
             } else {
                 console.error('Found something weird in the input');
                 this.consume();

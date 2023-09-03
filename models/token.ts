@@ -4,6 +4,7 @@ export enum TokenType {
     Subtraction,
     Multiplication,
     Division,
+    Power,
     Equals,
 }
 
@@ -34,6 +35,8 @@ export class Token {
                 return 2;
             case TokenType.Division:
                 return 2;
+            case TokenType.Power:
+                return 3;
             default:
                 return -1;
         }

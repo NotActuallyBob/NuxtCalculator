@@ -38,11 +38,7 @@ export class Character {
         return this.value === '/';
     }
 
-    isSpace(): boolean {
-        return this.value === ' ';
-    }
-
-    isSemi(): boolean {
-        return this.value === ';';
+    isPowerSign(): boolean {
+        return this.value === '^';
     }
 }
