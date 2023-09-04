@@ -53,6 +53,12 @@ export class Tokenizer {
             } else if (this.peek().isPowerSign()) {
                 this.consume();
                 tokenArray.push(new Token(TokenType.Power));
+            } else if (this.peek().isParenOpen()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.ParenOpen));
+            } else if (this.peek().isParenClose()) {
+                this.consume();
+                tokenArray.push(new Token(TokenType.ParenClose));
             } else {
                 console.error('Found something weird in the input');
                 this.consume();

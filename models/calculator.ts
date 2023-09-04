@@ -15,6 +15,7 @@ export class Calculator {
         if(statment === undefined) {
             return undefined;
         }
-        return statment.evaluate();
+        
+        return statment.calculate();
     }
 }

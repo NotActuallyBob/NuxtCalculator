@@ -29,3 +29,10 @@ test('5', () => {
     let result: number | undefined = Calculator.calculate(input);
     expect(result).toBe(33);
 });
+
+
+test('6', () => {
+    let input: string = '1+4^2*2+6/2-2';
+    let result: number | undefined = Calculator.calculate(input);
+    expect(result).toBe(34);
+});

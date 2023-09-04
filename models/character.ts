@@ -41,4 +41,12 @@ export class Character {
     isPowerSign(): boolean {
         return this.value === '^';
     }
+
+    isParenOpen(): boolean {
+        return this.value === '(';
+    }
+
+    isParenClose(): boolean {
+        return this.value === ')';
+    }
 }
