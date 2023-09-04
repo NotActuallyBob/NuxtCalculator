@@ -24,24 +24,24 @@ export class Token {
         this.value = newValue;
         return this;
     }
-    
-    getStatment(): Statement {
+
+    getStatment(level: number): Statement {
         switch(this.type) {
             case TokenType.Addition:
-                return new StatementAddition();
+                return new StatementAddition(level);
             case TokenType.Subtraction:
-                return new StatementSubtraction();
+                return new StatementSubtraction(level);
             case TokenType.Multiplication:
-                return new StatementMultiplication();
+                return new StatementMultiplication(level);
             case TokenType.Division:
-                return new StatementDivision();
+                return new StatementDivision(level);
             case TokenType.Power:
-                return new StatementPower();
+                return new StatementPower(level);
             case TokenType.Numeral:
                 if(this.value === undefined) {
                     throw new Error('Tried to create StatementNumber with a NumeralToken without a value');
                 }
-                return new StatementNumber(this.value);
+                return new StatementNumber(this.value, level);
             default:
                 throw new Error('Tried to get a statment (getStatment()) from a non operand');
         }

@@ -3,6 +3,7 @@ import { Statement, StatementAddition, StatementDivision, StatementMultiplicatio
 
 export class Parser {
     index: number;
+    level: number;
     tokens: Token[];
     rootStatment: Statement | undefined;
     previousStatement: Statement | undefined;
@@ -10,10 +11,12 @@ export class Parser {
     constructor () {
         this.tokens = [];
         this.index = 0;
+        this.level = 0;
     }
 
     resetParser() {
         this.index = 0;
+        this.level = 0;
         this.rootStatment = undefined;;
         this.previousStatement = undefined;
     }
@@ -31,7 +34,16 @@ export class Parser {
             console.log('Token(' + i + ') = ' + this.peek())
             console.log(i);
             const nextToken: Token = this.consume()!;
-            const nextStatement: Statement = nextToken.getStatment();
+            if(nextToken.type! === TokenType.ParenOpen){
+                this.level++;
+                continue;
+            }
+            if(nextToken.type! === TokenType.ParenClose){
+                this.level--;
+                continue;
+            }
+
+            const nextStatement: Statement = nextToken.getStatment(this.level);
             nextStatement.print();
 
             if(this.rootStatment === undefined) {

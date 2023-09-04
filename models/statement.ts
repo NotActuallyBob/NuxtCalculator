@@ -1,8 +1,8 @@
 export abstract class Statement {
     importance: number;
 
-    constructor(importance: number) {
-        this.importance = importance;
+    constructor(importance: number, level: number) {
+        this.importance = importance + 3 * level;
     }
 
     abstract calculate(): number;
@@ -61,8 +61,8 @@ export abstract class Statement {
 
 export class StatementNumber extends Statement {
     value: number;
-    constructor(value: number) {
-        super(999);
+    constructor(value: number, level: number) {
+        super(999, level);
         this.value = value;
     }
 
@@ -98,8 +98,8 @@ export class StatementNumber extends Statement {
 export class StatementAddition extends Statement {
     member1: Statement | undefined;
     member2: Statement | undefined;
-    constructor(member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
-        super(1);
+    constructor(level: number, member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
+        super(1, level);
         this.member1 = member1;
         this.member2 = member2;
     }
@@ -152,8 +152,8 @@ export class StatementAddition extends Statement {
 export class StatementSubtraction extends Statement {
     member1: Statement | undefined;
     member2: Statement | undefined;
-    constructor(member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
-        super(1);
+    constructor(level: number, member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
+        super(1, level);
         this.member1 = member1;
         this.member2 = member2;
     }
@@ -206,8 +206,8 @@ export class StatementSubtraction extends Statement {
 export class StatementMultiplication extends Statement {
     member1: Statement | undefined;
     member2: Statement | undefined;
-    constructor(member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
-        super(2);
+    constructor(level: number, member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
+        super(2, level);
         this.member1 = member1;
         this.member2 = member2;
     }
@@ -260,8 +260,8 @@ export class StatementMultiplication extends Statement {
 export class StatementDivision extends Statement {
     member1: Statement | undefined;
     member2: Statement | undefined;
-    constructor(member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
-        super(2);
+    constructor(level: number, member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
+        super(2, level);
         this.member1 = member1;
         this.member2 = member2;
     }
@@ -314,8 +314,8 @@ export class StatementDivision extends Statement {
 export class StatementPower extends Statement {
     member1: Statement | undefined;
     member2: Statement | undefined;
-    constructor(member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
-        super(3);
+    constructor(level: number, member1: Statement | undefined = undefined, member2: Statement | undefined = undefined) {
+        super(3, level);
         this.member1 = member1;
         this.member2 = member2;
     }
