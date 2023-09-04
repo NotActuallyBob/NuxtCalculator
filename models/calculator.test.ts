@@ -36,3 +36,21 @@ test('6', () => {
     let result: number | undefined = Calculator.calculate(input);
     expect(result).toBe(34);
 });
+
+test('7', () => {
+    let input: string = '1+2+3*(2+3)*4+(2+2)^(5-2)';
+    let result: number | undefined = Calculator.calculate(input);
+    expect(result).toBe(127);
+});
+
+test('8', () => {
+    let input: string = '1+2*(2+3)*4+1';
+    let result: number | undefined = Calculator.calculate(input);
+    expect(result).toBe(42);
+});
+
+test('9', () => {
+    let input: string = '1+(2+3)^(3-1)+2*4+1';
+    let result: number | undefined = Calculator.calculate(input);
+    expect(result).toBe(35);
+});
