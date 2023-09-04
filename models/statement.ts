@@ -16,45 +16,32 @@ export abstract class Statement {
         if (typeof this.member2 !== 'number') {
             this.member2 = this.member2.evaluate();
         }
-        console.log(this.calculate());
         return this.calculate();
     }
 
+    print() {
+        console.log(this.member1 + this.getType() + this.member2);
+    }
+
     abstract calculate(): number;
+    abstract getType(): string;
 
-    swapUp(statement: Statement, rootStatment: Statement): Statement {
-        if(typeof this.member2 === 'number'){
-            if(statement.isMoreImportant(this)){
-                this.member2 = statement;
-                return rootStatment;
-            } else {
-                statement.member1 = this;
-                return statement;
-            }
-        }
-
-        if(this.member2.isMoreImportant(statement)){
+    insert(statement: Statement, rootStatment: Statement, previousStatement: Statement | undefined = undefined): Statement {
+        if(!statement.isMoreImportant(this)) {
             statement.member1 = this;
+            if(previousStatement !== undefined) {
+                previousStatement.member2 = statement;
+                return rootStatment;
+            }
             return statement;
         }
 
-        const rightChild: Statement = this.member2 as Statement;
-
-        if(!rightChild.isMoreImportant(statement)){
-            statement.member1 = rightChild;
+        if(typeof this.member2 === 'number') {
             this.member2 = statement;
             return rootStatment;
         }
 
-        return rightChild.swapUp(statement, rootStatment);
-    }
-
-    swapRight(statement: Statement): void {
-        if (typeof this.member2 === 'number') {
-            this.member2 = statement;
-        } else {
-            this.member2.swapRight(statement);
-        }
+        return this.member2.insert(statement, rootStatment, this);
     }
 
     isMoreImportant(statement: Statement): boolean {
@@ -70,6 +57,10 @@ export class StatementAddition extends Statement {
     calculate(): number {
         return this.member1 as number + (this.member2 as number);
     }
+
+    getType(): string {
+        return '+';
+    }
 }
 
 export class StatementSubtraction extends Statement {
@@ -79,6 +70,10 @@ export class StatementSubtraction extends Statement {
 
     calculate(): number {
         return this.member1 as number - (this.member2 as number);
+    }
+
+    getType(): string {
+        return '-';
     }
 }
 
@@ -90,6 +85,10 @@ export class StatementMultiplication extends Statement {
     calculate(): number {
         return (this.member1 as number) * (this.member2 as number);
     }
+
+    getType(): string {
+        return '*';
+    }
 }
 
 export class StatementDivision extends Statement {
@@ -100,6 +99,10 @@ export class StatementDivision extends Statement {
     calculate(): number {
         return (this.member1 as number) / (this.member2 as number);
     }
+
+    getType(): string {
+        return '/';
+    }
 }
 
 export class StatementPower extends Statement {
@@ -109,5 +112,9 @@ export class StatementPower extends Statement {
 
     calculate(): number {
         return (this.member1 as number) ** (this.member2 as number);
+    }
+
+    getType(): string {
+        return '^';
     }
 }

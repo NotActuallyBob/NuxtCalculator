@@ -1,22 +1,20 @@
 import { Token } from "./token";
 import { Tokenizer } from "./tokenizer";
 import { Parser } from "./parser";
+import { Statement } from "./statement";
 
 export class Calculator {
-    static input: string;
 
     static calculate (input: string): number | undefined {
-        Calculator.input = input;
 
-        const tokenizer: Tokenizer = new Tokenizer(this.input);
+        const tokenizer: Tokenizer = new Tokenizer(input);
         const tokenArray: Token[] = tokenizer.tokenize();
 
-        const parser: Parser = new Parser(tokenArray);
-        const result: number | undefined = parser.parseTokens()!.evaluate();
-        return result;
+        const parser: Parser = new Parser();
+        const statment: Statement | undefined = parser.parseTokens(tokenArray);
+        if(statment === undefined) {
+            return undefined;
+        }
+        return statment.evaluate();
     }
-
-    
-
-    
 }

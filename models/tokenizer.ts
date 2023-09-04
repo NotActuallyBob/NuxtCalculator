@@ -59,9 +59,6 @@ export class Tokenizer {
             }
         }
 
-        tokenArray.forEach(token => {
-            console.log(token);
-        });
         return tokenArray;
     }
 }

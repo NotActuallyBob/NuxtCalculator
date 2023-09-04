@@ -4,34 +4,48 @@ import { Statement, StatementAddition, StatementDivision, StatementMultiplicatio
 export class Parser {
     index: number;
     tokens: Token[];
+    rootStatment: Statement | undefined;
+    previousStatement: Statement | undefined;
 
-    importanceOfLast: number = -1;
-    importanceOfCurrent: number = -1;
-
-    constructor (tokens: Token[]) {
-        this.tokens = tokens;
+    constructor () {
+        this.tokens = [];
         this.index = 0;
     }
 
-    parseTokens(): Statement | undefined {
+    resetParser() {
+        this.index = 0;
+        this.rootStatment = undefined;;
+        this.previousStatement = undefined;
+    }
+
+    parseTokens(tokens: Token[]): Statement | undefined {
+        this.tokens = tokens;
+        this.resetParser();
+        
+        console.log('hey');
+
         if(!this.hasNextOperation()) {
             return undefined;
         }
+
+        console.log('hey2');
         
-        let statement: Statement = this.getNextStatement();
-        let previousStatement: Statement = statement;
-        this.importanceOfLast = this.importanceOfCurrent;
-        while(this.hasNextOperation()){
-            const nextStatement = this.getNextStatement();
-            if(nextStatement.isMoreImportant(previousStatement)){
-                statement!.swapRight(nextStatement);
-            } else {
-                statement = statement.swapUp(nextStatement, statement);
+        while(!this.isExhausted()) {
+            console.log('hey3');
+            while(this.hasNextOperation()){
+                const nextStatement = this.getNextStatement();
+                if(this.rootStatment === undefined) {
+                    this.rootStatment = nextStatement;
+                } else {
+                    this.rootStatment = this.rootStatment.insert(nextStatement, this.rootStatment);
+                }
+                this.previousStatement = nextStatement;
+                this.rootStatment.print();
             }
-            this.importanceOfLast = this.importanceOfCurrent;
-            previousStatement = statement;
+            this.consume();
         }
-        return statement;
+        
+        return this.rootStatment;
     }
 
     getNextStatement(): Statement {
@@ -40,7 +54,6 @@ export class Parser {
         const number1: number = next.n1;
         const number2: number = next.n2;
 
-        this.importanceOfCurrent = operationToken.getImportance();
         return this.createStatement(operationToken, number1, number2);
     }
 
@@ -48,6 +61,10 @@ export class Parser {
         const n1: number = (this.consume()!.value!)
         const operationToken = (this.consume()!);
         const n2: number = (this.peek()!.value!)
+        if(this.peek(1) === undefined) {
+            this.consume();
+        }
+        
 
         return {operationToken, n1, n2};
     }
@@ -69,13 +86,16 @@ export class Parser {
     }
 
     hasNextOperation() {
-        
         return (this.peek() !== undefined &&
                 this.peek(1) !== undefined &&
                 this.peek(2) !== undefined &&
                 this.peek()!.type === TokenType.Numeral &&
                 this.peek(1)?.isOperation() &&
                 this.peek(2)!.type === TokenType.Numeral);
+    }
+
+    isExhausted() {
+        return this.peek() === undefined;
     }
 
     peek(offset: number = 0): Token | undefined {

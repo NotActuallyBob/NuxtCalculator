@@ -1,7 +1,6 @@
 <template>
     <div>
-        <v-text-field v-model="input"></v-text-field>
-        <v-btn @click="calculate">Calculate</v-btn>
+        <v-text-field v-model="input" @update:model-value="calculate"></v-text-field>
         <h2>{{ output }}</h2>
     </div>  
 </template>
