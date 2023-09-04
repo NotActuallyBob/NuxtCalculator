@@ -1,3 +1,6 @@
+![image](https://github.com/NotActuallyBob/NuxtCalculator/assets/44874012/1f255917-490e-4627-9196-f621ba515603)
+
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
