@@ -21,26 +21,21 @@ export class Parser {
     parseTokens(tokens: Token[]): Statement | undefined {
         this.tokens = tokens;
         this.resetParser();
-        
-        console.log('hey');
-
         if(!this.hasNextOperation()) {
             return undefined;
         }
 
-        console.log('hey2');
-        
         while(!this.isExhausted()) {
-            console.log('hey3');
             while(this.hasNextOperation()){
                 const nextStatement = this.getNextStatement();
+
                 if(this.rootStatment === undefined) {
                     this.rootStatment = nextStatement;
                 } else {
                     this.rootStatment = this.rootStatment.insert(nextStatement, this.rootStatment);
                 }
+                
                 this.previousStatement = nextStatement;
-                this.rootStatment.print();
             }
             this.consume();
         }
